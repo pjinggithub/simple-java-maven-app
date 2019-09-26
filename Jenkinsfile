@@ -3,14 +3,22 @@ pipeline {
         any {}
     }
     stages {
+       def mvnHome
+       stage('Preparation') { 
+          // Get the Maven tool.
+          // ** NOTE: This 'M3' Maven tool must be configured
+          // **       in the global configuration.           
+          mvnHome = tool 'M3'
+       }
+
         stage('Build') {
             steps {
-                sh 'mvn -B -DskipTests clean package'
+                sh ' "$mvnHome/bin/mvn" -B -DskipTests clean package'
             }
         }
         stage('Test') {
             steps {
-                sh 'mvn test'
+                sh '"$mvnHome/bin/mvn" test'
             }
             post {
                 always {
