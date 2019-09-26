@@ -1,24 +1,19 @@
 pipeline {
     agent {
-        any {}
+        docker {
+            image 'maven:3-alpine'
+            args '-v /root/.m2:/root/.m2'
+        }
     }
     stages {
-       def mvnHome
-       stage('Preparation') { 
-          // Get the Maven tool.
-          // ** NOTE: This 'M3' Maven tool must be configured
-          // **       in the global configuration.           
-          mvnHome = tool 'M3'
-       }
-
         stage('Build') {
             steps {
-                sh ' "$mvnHome/bin/mvn" -B -DskipTests clean package'
+                sh 'mvn -B -DskipTests clean package'
             }
         }
         stage('Test') {
             steps {
-                sh '"$mvnHome/bin/mvn" test'
+                sh 'mvn test'
             }
             post {
                 always {
